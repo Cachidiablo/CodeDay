@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>年月日三级联动下拉菜单-贰版(功能完善)</title>
+	<!--每日Github/11.26-->
+	<!--实现：将昨日代码进行完善，修改了平闰年的判断，日期加载的优化(从28开始)-->
+	<!--困扰的功能：默认选中今天的日期，现在是伪选中，只是将今天的日期赋值给了第一个option，下拉的时候第一个选项永远是今天的日期，很不方便-->
+</head>
+<style>
+select{
+	width: 100px;
+	text-align: center;
+}
+</style>
+<body>
+	
+<form name="reg">
+	<select name="YY" id="" onChange="YYDD(this.value)" onclick="YYClick()">
+		<option value=""> </option>
+	</select>
+	<select name="MM" id="" onChange="MMDD(this.value)" onclick="MMClick()">
+		<option value=""> </option>
+	</select>
+	<select name="DD" id="" onChange="DDDD(this.value)" onclick="DDClick()">
+		<option value=""> </option>
+	</select>
+	<input type="button" value="确定选择" id="btnSure" onclick="addtxt()">
+</form>
+
+<p id="txt"></p>
+
+<script>
+
+function addtxt(){
+	p=document.getElementById("txt");
+	var y=document.reg.YY.options[document.reg.YY.selectedIndex].value;
+	var m=document.reg.MM.options[document.reg.MM.selectedIndex].value;
+	var d=document.reg.DD.options[document.reg.DD.selectedIndex].value;
+	p.innerHTML="您选择的日期是:"+y+m+d;
+}
+
+//事件绑定 attachEvent(IE)   addEventListener(chrome/火狐)
+if(document.attachEvent){
+	window.attachEvent("onload",YYDDStart);
+}
+else{
+	window.addEventListener("load",YYDDStart,false);
+}
+/*
+function YYClick(){
+	document.reg.YY.options[0].innerHTML="请选择年";
+	document.reg.YY.options[0].value="";
+}
+function MMClick(){
+	document.reg.MM.options[0].innerHTML="请选择月";
+	document.reg.MM.options[0].value="";
+}
+function DDClick(){
+	document.reg.DD.options[0].innerHTML="请选择日";
+	document.reg.DD.options[0].value="";
+}
+*/
+function YYDDStart(){
+
+	//获得今年的年份
+	var y=new Date().getFullYear();
+	var m=new Date().getMonth()+1;
+	var d=new Date().getDate();
+
+	document.reg.YY.options[0].innerHTML=y+"年";
+	document.reg.YY.options[0].value=y;
+	document.reg.MM.options[0].innerHTML=m+"月";
+	document.reg.MM.options[0].value=m;
+	document.reg.DD.options[0].innerHTML=d+"日";
+	document.reg.DD.options[0].value=d;
+
+	//定义年的数据
+	for(var i=(y-20);i<(y+20);i++){
+		document.reg.YY.options.add(new Option(i+"年"));
+	}
+	//定义月的数据
+	for(var i=1;i<13;i++){
+		document.reg.MM.options.add(new Option(i+"月"));
+	}
+	//定义日的数据 如果不用变量，将checkDay写入for循环中，每进行一次for循环运行一遍checkDay
+	var dd=checkDay(y,m);
+	for(var i=1;i<=dd;i++){
+		document.reg.DD.options.add(new Option(i+"日"));
+	}
+}
+
+
+//根据年和月检查有多少天
+function checkDay(year,month){
+	var daynum;
+	if(month!=2&&(month==1||month==3||month==5||month==7||month==8||month==10||month==12)){
+		daynum=31;
+	}
+	else if(month!=2){
+		daynum=30;
+	}
+	//判断是闰年吗 1.能整除4 2.若是整百年，必须能整除400(例如1900能整除4，但是不是闰年)
+	else if(year%4==0&&year%100!=0||year%400==0&&month==2){
+		daynum=29;
+	}
+	else{
+		daynum=28;
+	}
+	return daynum;
+}
+
+//如果月份变化
+function MMDD(m){
+	
+	//得到的value值是“2月”的形式
+	var y=document.reg.YY.options[document.reg.YY.selectedIndex].value;
+	var d=checkDay(getNum(y),getNum(m));
+	WriteDay(d);
+}
+//如果年份变化
+function YYDD(y){
+	var m=document.reg.MM.options[document.reg.MM.selectedIndex].value;
+	var d=checkDay(getNum(y),getNum(m));
+	WriteDay(d);
+}
+function DDDD(d){
+	document.reg.YY.options[0].innerHTML="请选择日";
+}
+
+//清空以前的option，重新填充日options
+//思考:每月的日期相差的不多，能否进行判断，有选择性的填充
+function WriteDay(d){
+	//每个月至少有28天，所以从28开始
+	var dop=document.reg.DD;
+	dop.options.length=28;
+	for(var i=28;i<=d;i++){
+		dop.options.add(new Option(i+"日"));
+	}
+}
+
+//将获得的(年月日)字符串值转化为整形
+function getNum(i){
+	if(i.indexOf("年")){
+		return parseInt(i.split("年")[0]);
+	}
+	if(i.indexOf("月")){
+		return parseInt(i.split("月")[0]);
+	}
+	if(i.indexOf("日")){
+		return parseInt(i.split("日")[0]);
+	}
+	//初始化的value没有给后缀年月日，此处不执行任何操作
+}
+
+</script>
+
+</body>
+</html>
