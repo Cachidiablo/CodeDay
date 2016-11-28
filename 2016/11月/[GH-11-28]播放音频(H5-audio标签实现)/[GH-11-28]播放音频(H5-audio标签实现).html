@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>播放音频</title>
+	<!--每日Github/11.28-->
+	<!--实现：使用H5标签实现的几种不同的播放音频效果-->
+</head>
+
+<style>
+button{width: 80px;height: 50px;}
+</style>
+
+<script>
+	window.onload=function(){
+		var play1=document.getElementById("play1");
+			audio1=document.getElementById("audio1");
+			playMusic1=false;
+
+			play2=document.getElementById("play2");
+			audio2=document.getElementById("audio2");
+			playMusic2=false;
+
+			play3=document.getElementById("play3");
+			audio3=document.getElementById("audio3");
+			playMusic3=false;
+
+		play1.onclick=function(){
+			if(playMusic1==false){
+				audio1.play();
+				playMusic1=true;
+			}
+			else if(playMusic1==true){
+				audio1.pause();
+				playMusic1=false;
+				play1.innerHTML="播放";
+			}
+		}
+
+		play2.onclick=function(){
+			if(playMusic2==false){
+				audio2.src="sy.mp3";
+				audio2.play();
+				playMusic2=true;
+				play2.innerHTML="停止";
+			}
+			else if(playMusic2==true){
+				audio2.pause();
+				audio2.src="";
+				playMusic2=false;
+				play2.innerHTML="播放";
+			}
+		}
+
+		//注意！！开始在这迷了很久！
+		//设置的audioPlay确实是在函数onclick中有效，不过仅限于当前点击执行的onclick！
+		//停止的时候点击的是第二次onclick！不是一个函数！
+		//所以我们要设定一个全局的变量，将定时器存储在全局变量中，每次调用才都是一样的值。
+		var startTimer;
+		var pauseTimer;
+		play3.onclick=function(){
+			if(playMusic3==false){
+				clearInterval(startTimer);
+				clearInterval(pauseTimer);
+				audio3.volume=0.1;
+				var audioPlay=setInterval(function(){
+					var auVolume=audio3.volume;
+					if(!auVolume||auVolume>=0.9){
+						clearInterval(startTimer);
+						return;
+					}
+					else{
+						audio3.volume+=0.1;
+					}
+				},1000);
+				startTimer=audioPlay;
+				audio3.play();
+				playMusic3=true;
+				play3.innerHTML="停止";
+			}
+			else if(playMusic3==true){
+				clearInterval(startTimer);
+				clearInterval(pauseTimer);
+				var audioPlay=setInterval(function(){
+					var auVolume=audio3.volume;
+					if(!auVolume||auVolume<=0.1){
+						audio3.pause();
+						clearInterval(pauseTimer);
+						play3.innerHTML="播放";
+						return;
+					}
+					else{
+						audio3.volume-=0.1;
+					}
+				},1000);
+				pauseTimer=audioPlay;
+				playMusic3=false;
+			}
+		}
+
+
+
+	}
+</script>
+
+<body>
+	<!--自动播放音频
+		<audio src="sy.mp3" id="audio1" autoplay="autoplay"></audio>
+	-->
+
+	<!--点击播放播放音乐，点击暂停暂停音乐，再点击播放音乐继续播放-->
+	<button id="play1">播放</button>
+	<audio src="sy.mp3" id="audio1" controls="controls"></audio>
+	<span>点击播放播放音乐，点击暂停暂停音乐，再点击播放音乐继续播放</span>
+
+	<br /><br /><br />
+
+	<!--点击播放播放音乐，点击停止彻底音乐，再点击播放音乐从头播放-->
+	<button id="play2">播放</button>
+	<audio src="sy.mp3" id="audio2" controls="controls"></audio>
+	<span>点击播放播放音乐，点击停止彻底音乐，再点击播放音乐从头播放</span>
+
+	<br /><br /><br />
+
+	<!--音乐的淡入淡出效果-->
+	<button id="play3">播放</button>
+	<audio src="rz.mp3" id="audio3" controls="controls"></audio>
+	<span>从停止的音量开始，音乐的淡入淡出效果</span>
+
+
+
+</body>
+</html>
