@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>年月日三级联动下拉菜单-初版(实现)</title>
+	<!--每日Github/11.25-->
+	<!--实现：对别人的代码进行参考，初步实现年月日三级联动下拉菜单功能，还有许多不足之处-->
+</head>
+<body>
+	
+<form name="reg">
+	<select name="YY" id="" onChange="YYDD(this.value)">
+		<option value="">请选择 年</option>
+	</select>
+	<select name="MM" id="" onChange="MMDD(this.value)">
+		<option value="">请选择 月</option>
+	</select>
+	<select name="DD" id="">
+		<option value="">请选择 日</option>
+	</select>
+</form>
+
+<script>
+
+//事件绑定 attachEvent(IE)   addEventListener(chrome/火狐)
+if(document.attachEvent){
+	window.attachEvent("onload",YYDDStart);
+}
+else{
+	window.addEventListener("load",YYDDStart,false);
+}
+
+function YYDDStart(){
+
+	//获得今年的年份
+	var y=new Date().getFullYear();
+	var m=new Date().getMonth()+1;
+	var d=new Date().getDate();
+	document.reg.YY.options[0].innerHTML=y+"年";
+	document.reg.YY.options[0].value=y;
+	document.reg.MM.options[0].innerHTML=m+"月";
+	document.reg.MM.options[0].value=m;
+	document.reg.DD.options[0].innerHTML=d+"日";
+	document.reg.DD.options[0].value=d;
+
+
+	//定义年的数据
+	for(var i=(y-20);i<(y+20);i++){
+		document.reg.YY.options.add(new Option(i+"年"));
+	}
+	//定义月的数据
+	for(var i=1;i<13;i++){
+		document.reg.MM.options.add(new Option(i+"月"));
+	}
+	//定义日的数据 如果不用变量，将checkDay写入for循环中，每进行一次for循环运行一遍checkDay
+	var dd=checkDay(y,m);
+	for(var i=1;i<=dd;i++){
+		document.reg.DD.options.add(new Option(i+"日"));
+	}
+}
+
+
+//根据年和月检查有多少天
+function checkDay(year,month){
+	var daynum;
+	if(month!=2&&(month==1||month==3||month==5||month==7||month==8||month==10||month==12)){
+		daynum=31;
+	}
+	else if(month!=2){
+		daynum=30;
+	}
+	else if(year%4==0&&month==2){
+		daynum=29;
+	}
+	else{
+		daynum=28;
+	}
+	return daynum;
+}
+
+//如果月份变化
+function MMDD(m){
+	//得到的value值是“2月”的形式
+	var y=document.reg.YY.options[document.reg.YY.selectedIndex].value;
+	var d=checkDay(getNum(y),getNum(m));
+	WriteDay(d);
+}
+//如果年份变化
+function YYDD(y){
+	var m=document.reg.MM.options[document.reg.MM.selectedIndex].value;
+	var d=checkDay(getNum(y),getNum(m));
+	WriteDay(d);
+}
+
+//清空以前的option，重新填充日options
+//思考:每月的日期相差的不多，能否进行判断，有选择性的填充
+function WriteDay(d){
+	var dop=document.reg.DD;
+	dop.options.length=0;
+	for(var i=1;i<=d;i++){
+		dop.options.add(new Option(i+"日"));
+	}
+}
+
+//将获得的(年月日)字符串值转化为整形
+function getNum(i){
+	if(i.indexOf("年")){
+		return parseInt(i.split("年")[0]);
+	}
+	if(i.indexOf("月")){
+		return parseInt(i.split("月")[0]);
+	}
+	if(i.indexOf("日")){
+		return parseInt(i.split("日")[0]);
+	}
+	//初始化的value没有给后缀年月日，此处不执行任何操作
+}
+
+</script>
+
+</body>
+</html>

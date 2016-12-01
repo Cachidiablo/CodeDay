@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>相同次序的input和checkbox</title>
+	<!--每日github/11.24-->
+	<!--实现：未知个数的input和未知个数的checkbox一一对应，
+	当input和checkbox的顺序一样，且input输入不为空，checkbox为选中状态且值不为空时，将他们的值输出。-->
+</head>
+<style>
+body,h1,p{margin:0;font-family: "微软雅黑"}
+ul,li{padding:0;margin:0;list-style: none;}
+
+h1{
+	color:#fff;
+	background: #C3808C;
+	text-align: center;
+}
+.txt{
+	text-indent:2em;
+}
+.cover{
+	width: 600px;
+	margin: 0 auto;
+	overflow: hidden;
+	background: #FFE0E0;
+	padding:30px 0 30px 0;
+}
+#input1,
+#checkbox2{
+	float: left;
+	width: 50%;
+	text-align: center;
+	padding:20px 0;
+}
+#input1 li,
+#checkbox2 li{
+	line-height: 30px;
+}
+#btn{
+	display: block;
+	width: 80px;
+	height: 35px;
+	background: #DCB4BB;
+	margin:0 auto;
+	border-right: 2px solid #C399A0;
+	border-bottom: 2px solid #C399A0;
+	border-top: 1px solid #F7DBE0;
+	border-left: 1px solid #F7DBE0;
+}
+#ppp{
+	max-width: 90%;
+	min-height: 50px;
+	border: 1px solid #C399A0;
+	margin:0 auto;
+	padding:10px;
+}
+</style>
+
+<script>
+
+
+function clickBtn(){
+	var inputs=document.getElementsByTagName("input");
+	var ppp=document.getElementById("ppp");
+	ppp.innerHTML="";
+	var texts=[];
+	var checkboxs=[];
+	var textValue=[];
+	var checkboxValue=[];
+	var allValue=[];
+
+	for(var i=0;i<inputs.length;i++){
+		if(inputs[i].type=="text"){
+			texts.push(inputs[i]);
+		}
+		else if(inputs[i].type=="checkbox"){
+			checkboxs.push(inputs[i]);
+		}
+	}
+
+	for(var i=0;i<texts.length;i++){
+		textValue[i]=texts[i].value;
+	}
+	for(var i=0;i<checkboxs.length;i++){
+		if(checkboxs[i].checked==true){
+			checkboxValue[i]=checkboxs[i].value;
+		}
+		else{
+			checkboxValue[i]="";
+		}
+	}
+
+	for(var i=0;i<(textValue.length>checkboxValue.length?checkboxValue.length:textValue.length);i++){
+		if(textValue[i]!=""&&checkboxValue[i]!=""){
+			allValue[i]="这是第"+(i+1)+"组元素,输入的是:"+textValue[i]+"；选择的是:"+checkboxValue[i];
+		}
+	}
+
+	for(var i=0;i<allValue.length;i++){
+		if(allValue[i]){
+			var newNode=document.createElement("p");
+			newNode.innerHTML=allValue[i];
+			ppp.appendChild(newNode);
+		}
+	}
+
+}
+
+
+</script>
+
+<body>
+
+<div class="cover">
+
+	<h1>相同次序的input和checkbox</h1>
+	<p>实现功能：</p>
+	<p class="txt">未知个数的input和未知个数的checkbox一一对应，当input和checkbox的顺序一样，且input输入不为空，checkbox为选中状态且值不为空时，将他们的值输出。
+	</p>
+	
+	<ul id="input1">
+		<li>1.<input type="text" /></li>
+		<li>2.<input type="text" /></li>
+		<li>3.<input type="text" /></li>
+	</ul>
+
+	<ul id="checkbox2">
+		<li><input type="checkbox" value="checkbox111">	这是第一个</li>
+		<li><input type="checkbox" value="checkbox222"> 这是第二个</li>
+		<li><input type="checkbox" value="">	这是第三个	</li>
+		<li><input type="checkbox" value="checkbox444"> 这是第四个</li>
+	</ul>
+
+	<input id="btn" type="button" value="按我" onclick="clickBtn()">
+
+	<p>下面是输出结果：</p>
+	<div id="ppp">
+		请输入文本框值并且进行对应选择框选择~！
+	</div>
+
+</div>
+
+</body>
+</html>
