@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	
+</head>
+<body>
+	
+	<script>
+
+	function getStyle(objId,attr){
+		var e=$(objId);
+		return e.currentStyle?e.currentStyle[attr]:getComputedStyle(e)[attr];
+	}
+
+	var div=document.getElementsByTagName("div");
+	var str='';
+	var len=10;
+
+	for(var i=0;i<len;i++){
+		str+='<div style="width:50px;height:50px;background: green;position: absolute;left:'+(100+i*60)+'px;top:200px;"></div>';
+	}
+	document.body.innerHTML=str;
+
+	for(var i=0;i<len;i++){
+		addSAttr(div[i],"left");
+		addSAttr(div[i],"top");
+		div[i].onclick=function(){
+			leftAndUp(this);
+		}
+	}
+
+	function addSAttr(obj,attr){
+		obj[attr]=parseInt(getStyle(obj,attr));
+	}
+
+
+	function leftAndUp(obj){
+		var _this=obj;
+		shake(_this,"left",10,10,1,function(){
+			shake(_this,"top",10,8,1);
+		});
+	}
+
+
+
+	//元素 抖动方向 频率 回调函数
+	function shake(e,attr,speed,dAll,dSp,endFn){
+
+		e.style[attr]=e[attr]+'px';
+
+		var attrNum=e[attr];
+
+		var arrDD=[];
+		var num=0;
+		//抖动时连续点击多次  有隐患
+		//var attrNum=parseInt(getStyle(e,attr));
+
+		for(var i=dAll;i>0;i-=dSp){
+			arrDD.push(i,-i);
+		}
+		arrDD.push(0);
+		
+		clearInterval(e.shaker);
+		e.shaker=setInterval(function(){
+			e.style[attr]=attrNum+arrDD[num]+'px';
+			num++;
+			if(num===arrDD.length){
+				clearInterval(e.shaker);
+				endFn&&endFn();
+				num=0;
+			}
+		},speed);
+	}
+
+	</script>
+
+</body>
+</html>
